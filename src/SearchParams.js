@@ -12,6 +12,17 @@ const SearchParams = () => {
   const [breeds, setBreeds] = useState([]);
   const [animal, AnimalDropdown] = useDropdown("Animal", "Cat", ANIMALS);
   const [breed, BreedDropdown, setBreed] = useDropdown("Breed", "", breeds);
+  const [pets, setPets] = useState([]);
+
+  async function requestPets() {
+    const { animals } = await pet.animal({
+      location,
+      breed,
+      type: animal,
+    });
+
+    setPets(animals || []);
+  }
 
   // useEffect hook replaces #componentDidMount, #componentWillMount, #componentDidUpdate
   //  useEffect is disconnected from when the renders happen
@@ -39,7 +50,13 @@ const SearchParams = () => {
 
   return (
     <div className="search-params">
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          requestPets();
+        }}
+      >
         <label htmlFor="location">
           Location
           <input
