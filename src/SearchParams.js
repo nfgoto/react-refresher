@@ -11,7 +11,31 @@ const SearchParams = () => {
   const [location, setLocation] = useState("Seattle, WA");
   const [breeds, setBreeds] = useState([]);
   const [animal, AnimalDropdown] = useDropdown("Animal", "Cat", ANIMALS);
-  const [breed, BreedDropdown] = useDropdown("Breed", "African", breeds);
+  const [breed, BreedDropdown, setBreed] = useDropdown("Breed", "", breeds);
+
+  // useEffect hook replaces #componentDidMount, #componentWillMount, #componentDidUpdate
+  //  useEffect is disconnected from when the renders happen
+  // schedules the callback AFTER EVERY render happens (a lot of time....)
+  useEffect(
+    // runs after the first rendering
+    () => {
+      // clear state of breed input and breeds options
+      setBreeds([]);
+      setBreed("");
+
+      pet
+        .breeds(animal)
+        .then(({ breeds: apiBreed }) => {
+          const breedStrings = apiBreed.map(({ name }) => name.trim());
+          setBreeds(breedStrings);
+        })
+        .catch(console.error);
+    },
+    // to avoid making as many requests as renderings, declare the dependences to look for change to execute the effect
+    [animal, setBreeds, setBreed]
+    // [], empty array to execute the effect ONLY after the first rendering
+    // omit dependencies array to execute the effect will all renderings (infinite loops danger)
+  );
 
   return (
     <div className="search-params">
