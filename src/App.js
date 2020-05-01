@@ -4,10 +4,13 @@ import SearchParams from "./SearchParams";
 
 const App = () => {
   return (
-    <div>
-      <h1>React Refresh</h1>
-      <SearchParams />
-    </div>
+    // strict mode used to prohibit using deprecated or soon to be features
+    <React.StrictMode>
+      <div>
+        <h1>React Refresh</h1>
+        <SearchParams />
+      </div>
+    </React.StrictMode>
   );
 };
 
