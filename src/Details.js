@@ -2,6 +2,7 @@ import React from "react";
 import pet from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
+import ThemeContext from "./ThemeContext";
 
 /**
  * Hooks are reserved for functional components
@@ -42,7 +43,15 @@ class Details extends React.Component {
         <Carousel media={media} />
         <h1>{name}</h1>
         <h2>{`${animal} - ${breed} - ${location} - `}</h2>
-        <button>Adopt {name}</button>
+        <ThemeContext.Consumer>
+          {
+            // that callback automatically receives the hook array
+            ([theme]) => (
+              <button style={{ backgroundColor: theme }}>Adopt {name}</button>
+            )
+          }
+        </ThemeContext.Consumer>
+
         <p>{description}</p>
       </div>
     );

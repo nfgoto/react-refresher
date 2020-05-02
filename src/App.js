@@ -6,7 +6,7 @@ import Details from "./Details";
 import ThemeContext from "./ThemeContext";
 
 const App = () => {
-  const themeHook = useState("darkgreen");
+  const themeHook = useState("peru");
 
   return (
     // strict mode used to prohibit using deprecated or soon to be features
