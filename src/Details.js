@@ -7,13 +7,9 @@ import pet from "@frontendmasters/pet";
  *
  */
 class Details extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: true,
-    };
-  }
+  state = {
+    loading: true,
+  };
   // similar to useEffect hook in functional component with empty dependencies array
   // useful for network requests
   componentDidMount() {
