@@ -1,10 +1,11 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import pet from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import ThemeContext from "./ThemeContext";
 import { navigate } from "@reach/router";
-import Modal from "./Modal";
+
+const Modal = lazy(() => import("./Modal"));
 
 /**
  * Hooks are reserved for functional components
@@ -25,13 +26,13 @@ class Details extends React.Component {
         console.log(animal);
 
         this.setState({
-          url: animal.url,
-          name: animal.name,
-          animal: animal.type,
-          location: `${animal.contact.address.city}, ${animal.contact.address.state}`,
-          description: animal.description,
-          media: animal.photos,
-          breed: animal.breeds.primary,
+          url: animal?.url,
+          name: animal?.name,
+          animal: animal?.type,
+          location: `${animal?.contact?.address?.city}, ${animal?.contact?.address?.state}`,
+          description: animal?.description,
+          media: animal?.photos,
+          breed: animal?.breeds?.primary,
           loading: false,
         });
       })
@@ -78,15 +79,17 @@ class Details extends React.Component {
 
         <p>{description}</p>
         {showModal ? (
-          <Modal>
-            <div>
-              <h1>Would you like to adopt {name} ?</h1>
-              <div className="buttons">
-                <button onClick={this.adopt}>Yes</button>
-                <button onClick={this.toggleModal}>No</button>
+          <Suspense>
+            <Modal>
+              <div>
+                <h1>Would you like to adopt {name} ?</h1>
+                <div className="buttons">
+                  <button onClick={this.adopt}>Yes</button>
+                  <button onClick={this.toggleModal}>No</button>
+                </div>
               </div>
-            </div>
-          </Modal>
+            </Modal>
+          </Suspense>
         ) : null}
       </div>
     );

@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { render } from "react-dom";
-import { Router, Link } from "@reach/router";
-import SearchParams from "./SearchParams";
-import Details from "./Details";
+import { Router } from "@reach/router";
 import ThemeContext from "./ThemeContext";
 import Navbar from "./Navbar";
+
+// lazy loading Details page
+// Details is now a placeholder component
+const Details = lazy(() => import("./Details"));
+const SearchParams = lazy(() => import("./SearchParams"));
 
 const App = () => {
   const themeHook = useState("peru");
@@ -14,11 +17,13 @@ const App = () => {
     <React.StrictMode>
       <ThemeContext.Provider value={themeHook}>
         <div>
-          <Navbar />>
-          <Router>
-            <SearchParams path="/" />
-            <Details path="/details/:id" />
-          </Router>
+          <Navbar />
+          <Suspense fallback={<h1>Loading route...</h1>}>
+            <Router>
+              <SearchParams path="/" />
+              <Details path="/details/:id" />
+            </Router>
+          </Suspense>
         </div>
       </ThemeContext.Provider>
     </React.StrictMode>
