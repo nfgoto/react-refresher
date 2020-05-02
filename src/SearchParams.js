@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import pet, { ANIMALS } from "@frontendmasters/pet"; // Parcel can install packages just with an import, no need to "npm i"
 import useDropdown from "./useDropdown";
 import Results from "./Results";
+import ThemeContext from "./ThemeContext";
 
 const SearchParams = () => {
   // this is a HOOK (all hooks start with "useXYZ")
@@ -14,6 +15,7 @@ const SearchParams = () => {
   const [animal, AnimalDropdown] = useDropdown("Animal", "Cat", ANIMALS);
   const [breed, BreedDropdown, setBreed] = useDropdown("Breed", "", breeds);
   const [pets, setPets] = useState([]);
+  const [theme] = useContext(ThemeContext);
 
   async function requestPets() {
     const { animals } = await pet.animals({
@@ -73,7 +75,7 @@ const SearchParams = () => {
           <AnimalDropdown />
         </div>
         <BreedDropdown />
-        <button>Submit</button>
+        <button style={{ backgroundColor: theme }}>Submit</button>
       </form>
       <Results pets={pets} />
     </div>
