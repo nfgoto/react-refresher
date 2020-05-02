@@ -3,6 +3,8 @@ import pet from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import ThemeContext from "./ThemeContext";
+import { navigate } from "@reach/router";
+import Modal from "./Modal";
 
 /**
  * Hooks are reserved for functional components
@@ -12,6 +14,7 @@ import ThemeContext from "./ThemeContext";
 class Details extends React.Component {
   state = {
     loading: true,
+    showModal: false,
   };
   // similar to useEffect hook in functional component with empty dependencies array
   // useful for network requests
@@ -19,7 +22,10 @@ class Details extends React.Component {
     pet
       .animal(+this.props.id)
       .then(({ animal }) => {
+        console.log(animal);
+
         this.setState({
+          url: animal.url,
           name: animal.name,
           animal: animal.type,
           location: `${animal.contact.address.city}, ${animal.contact.address.state}`,
@@ -31,12 +37,25 @@ class Details extends React.Component {
       })
       .catch(console.error);
   }
+
+  toggleModal = () => this.setState({ showModal: !this.state.showModal });
+
+  adopt = () => navigate(this.state.url);
+
   render() {
     if (this.state.loading) {
       return <h1>Loading...</h1>;
     }
 
-    const { name, animal, location, description, breed, media } = this.state;
+    const {
+      name,
+      animal,
+      location,
+      description,
+      breed,
+      media,
+      showModal,
+    } = this.state;
 
     return (
       <div className="details">
@@ -47,12 +66,28 @@ class Details extends React.Component {
           {
             // that callback automatically receives the hook array
             ([theme]) => (
-              <button style={{ backgroundColor: theme }}>Adopt {name}</button>
+              <button
+                style={{ backgroundColor: theme }}
+                onClick={this.toggleModal}
+              >
+                Adopt {name}
+              </button>
             )
           }
         </ThemeContext.Consumer>
 
         <p>{description}</p>
+        {showModal ? (
+          <Modal>
+            <div>
+              <h1>Would you like to adopt {name} ?</h1>
+              <div className="buttons">
+                <button onClick={this.adopt}>Yes</button>
+                <button onClick={this.toggleModal}>No</button>
+              </div>
+            </div>
+          </Modal>
+        ) : null}
       </div>
     );
   }
