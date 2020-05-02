@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 
 const Modal = ({ children }) => {
   // to refer to same element across renders (instead of recreating same element each render, garbage collection)
+  // useRef() hook function returns a sealed (not frozen) obkject containing a .current property
+  // useRef hook method used to holding on to DOM elements, timeouts, intervals
   const elRef = useRef(null);
 
   // create a div only once and keep ref to it
