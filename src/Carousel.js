@@ -19,6 +19,16 @@ class Carousel extends React.Component {
     return { photos };
   }
 
+  //   need to use arrow fn to keep 'this' pointing to Carousel instance
+  //  rule of thumb = use arrows fb for event listeners or when passing fn in children
+  handleIndexClick = (event) => {
+    this.setState({
+      // event.target.dataset allows to get data-* attributes
+      // anything retrieved from DOM as strings
+      active: +event.target.dataset.index,
+    });
+  };
+
   render() {
     const { photos, active } = this.state;
     return (

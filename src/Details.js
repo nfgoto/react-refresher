@@ -1,5 +1,7 @@
 import React from "react";
 import pet from "@frontendmasters/pet";
+import Carousel from "./Carousel";
+import ErrorBoundary from "./ErrorBoundary";
 
 /**
  * Hooks are reserved for functional components
@@ -33,10 +35,11 @@ class Details extends React.Component {
       return <h1>Loading...</h1>;
     }
 
-    const { name, animal, location, description, breed } = this.state;
+    const { name, animal, location, description, breed, media } = this.state;
 
     return (
       <div className="details">
+        <Carousel media={media} />
         <h1>{name}</h1>
         <h2>{`${animal} - ${breed} - ${location} - `}</h2>
         <button>Adopt {name}</button>
@@ -46,4 +49,13 @@ class Details extends React.Component {
   }
 }
 
-export default Details;
+export default function DetailsWithErrorBoundary(props) {
+  // the ErrorBoundary boundary must be used as a higher order component to catch errors in children components
+  //    meaning = pass only ONE child to the ErrorBoundary (without nested children - that's why you can't use it in the render method)
+  //   <Details {...props} />  ==  <Details id={props.id} name={props.name} />
+  return (
+    <ErrorBoundary>
+      <Details {...props} />
+    </ErrorBoundary>
+  );
+}
