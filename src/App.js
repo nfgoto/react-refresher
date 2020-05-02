@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
-import { Router } from "@reach/router";
+import { Router, Link } from "@reach/router";
 import SearchParams from "./SearchParams";
 import Details from "./Details";
 
@@ -9,7 +9,9 @@ const App = () => {
     // strict mode used to prohibit using deprecated or soon to be features
     <React.StrictMode>
       <div>
-        <h1>React Refresh</h1>
+        <header>
+          <Link to="/">React Refresh</Link>
+        </header>
         <Router>
           <SearchParams path="/" />
           <Details path="/details/:id" />
