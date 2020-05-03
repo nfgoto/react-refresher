@@ -1,5 +1,4 @@
 import React, { useState, lazy, Suspense } from "react";
-import { render } from "react-dom";
 import { Router } from "@reach/router";
 import ThemeContext from "./ThemeContext";
 import Navbar from "./Navbar";
@@ -30,4 +29,5 @@ const App = () => {
   );
 };
 
-render(<App />, document.getElementById("root"));
+// at INITIAL render there should not be any reference to document, later references are OK because DOM is mounted in browser (SSR)
+export default App;
