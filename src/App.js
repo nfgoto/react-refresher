@@ -2,11 +2,13 @@ import React, { useState, lazy, Suspense } from "react";
 import { Router } from "@reach/router";
 import ThemeContext from "./ThemeContext";
 import Navbar from "./Navbar";
+import SearchParams from "./SearchParams";
+import Details from "./Details";
 
-// lazy loading Details page
-// Details is now a placeholder component
-const Details = lazy(() => import("./Details"));
-const SearchParams = lazy(() => import("./SearchParams"));
+// lazy loading Details page, placeholder components until accessed
+// ReactDOMServer (used server-side) does not yet support Suspense , maybe use react-lazy-ssr
+// const Details = lazy(() => import("./Details"));
+// const SearchParams = lazy(() => import("./SearchParams"));
 
 const App = () => {
   const themeHook = useState("peru");
@@ -17,12 +19,10 @@ const App = () => {
       <ThemeContext.Provider value={themeHook}>
         <div>
           <Navbar />
-          <Suspense fallback={<h1>Loading route...</h1>}>
-            <Router>
-              <SearchParams path="/" />
-              <Details path="/details/:id" />
-            </Router>
-          </Suspense>
+          <Router>
+            <SearchParams path="/" />
+            <Details path="/details/:id" />
+          </Router>
         </div>
       </ThemeContext.Provider>
     </React.StrictMode>

@@ -4,8 +4,10 @@ import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import ThemeContext from "./ThemeContext";
 import { navigate } from "@reach/router";
+import Modal from "./Modal";
 
-const Modal = lazy(() => import("./Modal"));
+// ReactDOMServer (used server-side) does not yet support Suspense , maybe use react-lazy-ssr
+// const Modal = lazy(() => import("./Modal"));
 
 /**
  * Hooks are reserved for functional components
@@ -79,17 +81,15 @@ class Details extends React.Component {
 
         <p>{description}</p>
         {showModal ? (
-          <Suspense>
-            <Modal>
-              <div>
-                <h1>Would you like to adopt {name} ?</h1>
-                <div className="buttons">
-                  <button onClick={this.adopt}>Yes</button>
-                  <button onClick={this.toggleModal}>No</button>
-                </div>
+          <Modal>
+            <div>
+              <h1>Would you like to adopt {name} ?</h1>
+              <div className="buttons">
+                <button onClick={this.adopt}>Yes</button>
+                <button onClick={this.toggleModal}>No</button>
               </div>
-            </Modal>
-          </Suspense>
+            </div>
+          </Modal>
         ) : null}
       </div>
     );
