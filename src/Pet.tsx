@@ -1,7 +1,25 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import { Link } from "@reach/router";
+import { Photo } from "@frontendmasters/pet";
 
-export default function Pet({ name, animal, breed, media, location, id }) {
+interface IProps {
+  name: string;
+  animal: string;
+  breed: string;
+  media: Photo[];
+  location: string;
+  id: number;
+}
+
+const Pet: FunctionComponent<IProps> = ({
+  name,
+  animal,
+  breed,
+  media,
+  location,
+  id,
+}: IProps) => {
+  // What it really does in pure JS
   //   return React.createElement("div", {}, [
   //     React.createElement("h1", {}, name),
   //     React.createElement("h1", {}, animal),
@@ -25,4 +43,6 @@ export default function Pet({ name, animal, breed, media, location, id }) {
       </div>
     </Link>
   );
-}
+};
+
+export default Pet;

@@ -1,7 +1,17 @@
 import React from "react";
+import { Photo } from "@frontendmasters/pet";
 
-class Carousel extends React.Component {
-  state = {
+interface IProps {
+  media: Photo[];
+}
+
+interface IState {
+  active: number;
+  photos: string[];
+}
+
+class Carousel extends React.Component<IProps, IState> {
+  public state = {
     photos: [],
     active: 0,
   };
@@ -9,7 +19,7 @@ class Carousel extends React.Component {
   //   must be static
   //   https://reactjs.org/docs/react-component.html#static-getderivedstatefromprops
   //   used to merge some props with state
-  static getDerivedStateFromProps({ media }) {
+  public static getDerivedStateFromProps({ media }: IProps) {
     let photos = ["http://placecorgi.com/600/600"];
 
     if (media.length) {
@@ -21,22 +31,27 @@ class Carousel extends React.Component {
 
   //   need to use arrow fn to keep 'this' pointing to Carousel instance
   //  rule of thumb = use arrows fb for event listeners or when passing fn in children
-  handleIndexClick = (event) => {
-    this.setState({
-      // event.target.dataset allows to get data-* attributes
-      // anything retrieved from DOM as strings
-      active: +event.target.dataset.index,
-    });
+  public handleIndexClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+
+    if (event.target.dataset.index) {
+      this.setState({
+        // event.target.dataset allows to get data-* attributes
+        // anything retrieved from DOM as strings
+        active: +event.target.dataset.index,
+      });
+    }
   };
 
-  render() {
+  public render() {
     const { photos, active } = this.state;
     return (
       <div className="carousel">
         <img src={photos[active]} alt="animal" />
         <div className="carousel-smaller">
           {photos.map((photo, index) => (
-            // eslint-disable-next-line
             <img
               key={photo}
               onClick={this.handleIndexClick}

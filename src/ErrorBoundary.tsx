@@ -1,24 +1,24 @@
-import React, { Component } from "react";
+import React, { Component, ErrorInfo } from "react";
 import { Link, Redirect } from "@reach/router";
 
 class ErrorBoundary extends Component {
-  state = {
+  public state = {
     hasError: false,
     redirect: false,
   };
 
   // https://reactjs.org/docs/react-component.html#static-getderivedstatefromerror
-  static getDerivedStateFromError(error) {
+  public static getDerivedStateFromError(error: Error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
   // https://reactjs.org/docs/react-component.html#componentdidcatch
-  componentDidCatch(error, info) {
+  public componentDidCatch(error: Error, info: ErrorInfo) {
     console.error("ErrorBoundary caught an error", error, info);
   }
 
-  componentDidUpdate() {
+  public componentDidUpdate() {
     if (this.state.hasError) {
       setTimeout(() => this.setState({ redirect: true }), 5000);
 
@@ -27,7 +27,7 @@ class ErrorBoundary extends Component {
     }
   }
 
-  render() {
+  public render() {
     if (this.state.redirect) {
       return <Redirect to="/" />;
     }

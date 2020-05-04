@@ -3,7 +3,7 @@ import React from "react";
 import { renderToNodeStream } from "react-dom/server";
 import { ServerLocation } from "@reach/router";
 import fs from "fs";
-import App from "../src/App";
+import App from "../src/App.tsx";
 
 const PORT = process.env.PORT || 3000;
 

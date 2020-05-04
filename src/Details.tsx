@@ -1,27 +1,42 @@
 import React, { lazy, Suspense } from "react";
-import pet from "@frontendmasters/pet";
+import pet, { Photo } from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import ThemeContext from "./ThemeContext";
-import { navigate } from "@reach/router";
+import { navigate, RouteComponentProps } from "@reach/router";
 import Modal from "./Modal";
 
 // ReactDOMServer (used server-side) does not yet support Suspense , maybe use react-lazy-ssr
 // const Modal = lazy(() => import("./Modal"));
+
+type Props = RouteComponentProps<{ id: string }>;
 
 /**
  * Hooks are reserved for functional components
  * In stategul components, you use lifecycle methods (#componentDidMount, etc.)
  *
  */
-class Details extends React.Component {
-  state = {
+class Details extends React.Component<Props> {
+  public state = {
     loading: true,
     showModal: false,
+    url: "",
+    name: "",
+    animal: "",
+    location: "",
+    description: "",
+    media: [] as Photo[],
+    breed: "",
   };
+
   // similar to useEffect hook in functional component with empty dependencies array
   // useful for network requests
-  componentDidMount() {
+  public componentDidMount() {
+    if (!this.props.id) {
+      navigate("/");
+      return;
+    }
+
     pet
       .animal(+this.props.id)
       .then(({ animal }) => {
@@ -38,14 +53,15 @@ class Details extends React.Component {
           loading: false,
         });
       })
-      .catch(console.error);
+      .catch((err: Error) => this.setState({ error: err }));
   }
 
-  toggleModal = () => this.setState({ showModal: !this.state.showModal });
+  public toggleModal = () =>
+    this.setState({ showModal: !this.state.showModal });
 
-  adopt = () => navigate(this.state.url);
+  public adopt = () => navigate(this.state.url);
 
-  render() {
+  public render() {
     if (this.state.loading) {
       return <h1>Loading...</h1>;
     }
@@ -70,7 +86,7 @@ class Details extends React.Component {
             // that callback automatically receives the hook array
             ([theme]) => (
               <button
-                style={{ backgroundColor: theme }}
+                style={{ backgroundColor: theme as string }}
                 onClick={this.toggleModal}
               >
                 Adopt {name}
@@ -96,7 +112,7 @@ class Details extends React.Component {
   }
 }
 
-export default function DetailsWithErrorBoundary(props) {
+export default function DetailsWithErrorBoundary(props: Props) {
   // the ErrorBoundary boundary must be used as a higher order component to catch errors in children components
   //    meaning = pass only ONE child to the ErrorBoundary (without nested children - that's why you can't use it in the render method)
   //   <Details {...props} />  ==  <Details id={props.id} name={props.name} />

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, FunctionComponent, Dispatch } from "react";
 
 // my custom hook
-const useDropdown = (label, defaultState, options = []) => {
+const useDropdown = (
+  label: string,
+  defaultState: string,
+  options: string[]
+) => {
   const [state, setState] = useState(defaultState);
   const id = `use-dropdown-${label.replace(" ", "").toLowerCase()}`;
-  const Dropdown = () => (
+  const Dropdown: FunctionComponent = () => (
     <div>
       <label htmlFor={id}>
         {label}
@@ -26,7 +30,12 @@ const useDropdown = (label, defaultState, options = []) => {
     </div>
   );
 
-  return [state, Dropdown, setState];
+  // be specific about type of element at position
+  return [state, Dropdown, setState] as [
+    string,
+    FunctionComponent,
+    Dispatch<string>
+  ];
 };
 
 export default useDropdown;
