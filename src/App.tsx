@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Router } from "@reach/router";
-import ThemeContext from "./ThemeContext";
+import { Provider } from "react-redux";
 import Navbar from "./Navbar";
 import SearchParams from "./SearchParams";
 import Details from "./Details";
+import store from "./store";
 
 // lazy loading Details page, placeholder components until accessed
 // ReactDOMServer (used server-side) does not yet support Suspense , maybe use react-lazy-ssr
@@ -11,12 +12,9 @@ import Details from "./Details";
 // const SearchParams = lazy(() => import("./SearchParams"));
 
 const App = () => {
-  const themeHook = useState("peru");
-
   return (
-    // strict mode used to prohibit using deprecated or soon to be features
     <React.StrictMode>
-      <ThemeContext.Provider value={themeHook}>
+      <Provider store={store}>
         <div>
           <Navbar />
           <Router>
@@ -24,7 +22,7 @@ const App = () => {
             <Details path="/details/:id" />
           </Router>
         </div>
-      </ThemeContext.Provider>
+      </Provider>
     </React.StrictMode>
   );
 };

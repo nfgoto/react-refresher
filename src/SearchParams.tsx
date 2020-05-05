@@ -4,28 +4,39 @@ import React, {
   useContext,
   FunctionComponent,
 } from "react";
+import { connect } from "react-redux";
 import pet, { ANIMALS, Animal } from "@frontendmasters/pet"; // Parcel can install packages just with an import, no need to "npm i"
 import useDropdown from "./useDropdown";
 import Results from "./Results";
-import ThemeContext from "./ThemeContext";
 import { RouteComponentProps } from "@reach/router";
 
-const SearchParams: FunctionComponent<RouteComponentProps> = () => {
-  // this is a HOOK (all hooks start with "useXYZ")
-  //   "Seattle, WA" is the default state
-  //   when creating a hook, useXYZ(), you get back an array of thwo things = the current state + the updater function (arbitrary name)
-  //   hooks never go inside of for loops or if statements, because React keeps track of them in the lexical order of declaration
-  //      hooks must be called in the same order each render
-  const [location, setLocation] = useState("Seattle, WA");
+import changeTheme from "./action_creators/changeTheme";
+import changelocation from "./action_creators/changelocation";
+import { IStandardAction } from "./reducers/standardAction.interface";
+
+interface IProps {
+  theme: string;
+  location: string;
+  setLocation: (location: string) => any;
+  setTheme: (theme: string) => any;
+}
+
+interface IState {
+  theme: string;
+  location: string;
+}
+
+const SearchParams: FunctionComponent<RouteComponentProps<IProps>> = (
+  props
+) => {
   const [breeds, setBreeds] = useState([] as string[]);
   const [animal, AnimalDropdown] = useDropdown("Animal", "Cat", ANIMALS);
   const [breed, BreedDropdown, setBreed] = useDropdown("Breed", "", breeds);
   const [pets, setPets] = useState([] as Animal[]);
-  const [theme, setTheme] = useContext(ThemeContext);
 
   async function requestPets() {
     const { animals } = await pet.animals({
-      location,
+      location: props.location,
       breed,
       type: animal,
     });
@@ -70,10 +81,12 @@ const SearchParams: FunctionComponent<RouteComponentProps> = () => {
           Location
           <input
             id="location"
-            value={location}
+            value={props.location}
             placeholder="Location"
             onChange={(e) => {
-              setLocation(e.target.value);
+              if (props.setLocation) {
+                props.setLocation(e.target.value);
+              }
             }}
           />
         </label>
@@ -84,9 +97,17 @@ const SearchParams: FunctionComponent<RouteComponentProps> = () => {
         <label htmlFor="theme">
           Theme
           <select
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)}
-            onBlur={(e) => setTheme(e.target.value)}
+            value={props.theme}
+            onChange={(e) => {
+              if (props.setTheme) {
+                props.setTheme(e.target.value);
+              }
+            }}
+            onBlur={(e) => {
+              if (props.setTheme) {
+                props.setTheme(e.target.value);
+              }
+            }}
           >
             <option>Default</option>
             <option value="red">Red</option>
@@ -95,11 +116,24 @@ const SearchParams: FunctionComponent<RouteComponentProps> = () => {
             <option value="darkgreen">Dark Green</option>
           </select>
         </label>
-        <button style={{ backgroundColor: theme }}>Submit</button>
+        <button style={{ backgroundColor: props.theme }}>Submit</button>
       </form>
       <Results pets={pets} />
     </div>
   );
 };
 
-export default SearchParams;
+const mapStateToProps = ({ theme, location }: IState) => ({
+  theme,
+  location,
+});
+
+const mapDispatchToProps = (dispatch: (action: IStandardAction) => void) => ({
+  setTheme: (theme: string) => dispatch(changeTheme(theme)),
+  setLocation: (location: string) => dispatch(changelocation(location)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchParams as any) as any;
