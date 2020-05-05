@@ -1,15 +1,18 @@
 import React, { lazy, Suspense } from "react";
 import pet, { Photo } from "@frontendmasters/pet";
+import { navigate, RouteComponentProps } from "@reach/router";
+import { connect } from "react-redux";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
-import ThemeContext from "./ThemeContext";
-import { navigate, RouteComponentProps } from "@reach/router";
 import Modal from "./Modal";
 
 // ReactDOMServer (used server-side) does not yet support Suspense , maybe use react-lazy-ssr
 // const Modal = lazy(() => import("./Modal"));
 
-type Props = RouteComponentProps<{ id: string }>;
+type Props = RouteComponentProps<{ id: string; theme: string }>;
+interface IState {
+  theme: string;
+}
 
 /**
  * Hooks are reserved for functional components
@@ -81,21 +84,14 @@ class Details extends React.Component<Props> {
         <Carousel media={media} />
         <h1>{name}</h1>
         <h2>{`${animal} - ${breed} - ${location} - `}</h2>
-        <ThemeContext.Consumer>
-          {
-            // that callback automatically receives the hook array
-            ([theme]) => (
-              <button
-                style={{ backgroundColor: theme as string }}
-                onClick={this.toggleModal}
-              >
-                Adopt {name}
-              </button>
-            )
-          }
-        </ThemeContext.Consumer>
-
-        <p>{description}</p>
+        // that callback automatically receives the hook array
+        <button
+          style={{ backgroundColor: this.props.theme as string }}
+          onClick={this.toggleModal}
+        >
+          Adopt {name}
+        </button>
+        )<p>{description}</p>
         {showModal ? (
           <Modal>
             <div>
@@ -112,13 +108,17 @@ class Details extends React.Component<Props> {
   }
 }
 
+const mapStateToProps = ({ theme }: IState) => ({ theme });
+
+const WrappedDetails = connect(mapStateToProps)(Details);
+
 export default function DetailsWithErrorBoundary(props: Props) {
   // the ErrorBoundary boundary must be used as a higher order component to catch errors in children components
   //    meaning = pass only ONE child to the ErrorBoundary (without nested children - that's why you can't use it in the render method)
   //   <Details {...props} />  ==  <Details id={props.id} name={props.name} />
   return (
     <ErrorBoundary>
-      <Details {...props} />
+      <WrappedDetails {...props} />
     </ErrorBoundary>
   );
 }
