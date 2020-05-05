@@ -3,7 +3,7 @@ import React from "react";
 import { renderToNodeStream } from "react-dom/server";
 import { ServerLocation } from "@reach/router";
 import fs from "fs";
-import App from "../src/App.tsx";
+import App from "../src/App";
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,10 +21,12 @@ app.use((req, res) => {
   res.write(parts[0]);
 
   // use ServerLocation to redirect requests from browser in React app running on server
-  const reactMarkup = (
-    <ServerLocation url={req.url}>
-      <App />
-    </ServerLocation>
+  const reactMarkup = React.createElement(
+    ServerLocation,
+    {
+      url: req.url,
+    },
+    React.createElement(App)
   );
 
   //   will progressively render the React app
